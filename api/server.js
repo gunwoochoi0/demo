@@ -1,8 +1,9 @@
 const express = require('express');
 const path = require('path');
-const app = express(),
-      bodyParser = require("body-parser");
-      port = 80;
+const app = express();
+const transactions = require('./transactions');
+bodyParser = require("body-parser");
+port = 80;
 
 // place holder for the data
 const users = [
@@ -38,10 +39,15 @@ app.post('/api/user', (req, res) => {
   res.json("user addedd");
 });
 
-app.get('/', (req,res) => {
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../my-app/build/index.html'));
 });
 
+app.post('/transaction', (req, res) => {
+  transactions.processTransaction();
+  res.json("transaction succeeded!");
+})
+
 app.listen(port, () => {
-    console.log(`Server listening on the port::${port}`);
+  console.log(`Server listening on the port::${port}`);
 });
