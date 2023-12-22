@@ -57,7 +57,13 @@ const handlePaymentConfirmation = async (charge, phoneNumber) => {
 export const processTransaction = async () => {
     try {
         const customer = await createCustomer('customer@email.com', 'tok_visa');
-        const charge = await createCharge(customer.id, 2000); // Amount in cents ($20.00)
+        // Additional support. Retry transactions in case of failures
+        for (let i = 0; i < 3; i++) {
+            const charge = await createCharge(customer.id, 2000);
+            if (charge.status === 'succeeded') {
+                break;
+            }
+        }
         handlePaymentConfirmation(charge);
     } catch (error) {
         console.error('Transaction failed:', error);
